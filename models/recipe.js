@@ -2,7 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const CATEGORIES = require("./food-categories");
 
-const RecipeSchema = new Schema({
+const RecipeSchema = new Schema({}, {
+  timestamps: {
+    createdAt: "created_at",
+    updatedAt: "updated_at"
+  }
+});
+RecipeSchema.add({
   name: {
     type: String,
     required: [true, "You need a name for your recipe"]
@@ -15,44 +21,45 @@ const RecipeSchema = new Schema({
     type: String,
     required: [true, "You need directions for your recipe"]
   },
-  categories: [{
+  category: {
     type: String,
     enum: CATEGORIES,
-    required: true
-  }],
+  },
   difficulty: {
     type: Number,
-    min: 1,
+    min: 0,
     max: 3
   },
   numberPeople: {
     type: Number,
-    required: true
   },
   cookingTime: {
-    type: Date
+    type: Number
   },
   preparationTime: {
-    type: Date
+    type: Number
   },
   _creator: {
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  _favorites: {
+  _favorites: [{
     type: Schema.Types.ObjectId,
     ref: "User"
-  },
+  }],
   _events: [{
     type: Schema.Types.ObjectId,
     ref: "Event"
   }]
-}, {
-  timestamps: {
-    createdAt: "created_at",
-    updatedAt: "updated_at"
-  }
 });
+
+RecipeSchema.methods.hasIdInArray = function (id, array) {
+  for (let i = 0; i < array.length; i++) {
+    if (id.toString() === array[i].toString())
+      return i;
+  }
+  return -1;
+};
 
 const Recipe = mongoose.model("Recipe", RecipeSchema);
 module.exports = Recipe;

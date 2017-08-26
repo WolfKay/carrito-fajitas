@@ -1,47 +1,30 @@
-<h2 class="centered"> Edit your profile </h2>
+<h1 class="centered title"> Edit your profile </h1>
+
+<form>
+  <div class="form-group col-xs-3 col-md-4 centered">
+  </div>
+  <div class="form-group col-xs-6 col-md-4 centered">
+    <input class="form-control" type="file" id="file-input" name="file-input">
+    <p id="status">Please select a file</p>
+    <% if (user.picturePath && user.picturePath !== "") { %>
+      <img id="preview" src="<%= user.picturePath %>">
+    <% } else { %>
+      <img id="preview" src="/images/default.png">
+    <% } %>
+    <input type="hidden" id="avatar-url" name="avatar-url" value="/images/default.png">
+  </div>
+</form>
 
 <form action="/profile" method="POST">
 
-  <div class="form-group col-xs-4 centered">
-    <label class="centered" for="username">Username</label>
+  <input class="form-control" type="hidden" id="picturePath" name="picturePath" value="<%= user.picturePath%>">
+
+  <div class="form-group col-xs-12 col-md-6 centered">
+    <label class="centered" for="username">User name</label>
     <input class="form-control" type="text" id="username" name="username" value="<%= user.username%>">
   </div>
 
-  <div class="form-group col-xs-4 centered">
-    <label class="centered" for="email">email</label>
-    <input class="form-control" type="email" id="email" name="email" value="<%= user.email%>">
-  </div>
-
-  <div class="form-group col-xs-4 centered">
-    <label class="centered" for="name">Name</label>
-    <input class="form-control" type="text" name="name" id="name" value="<%= user.name%>">
-  </div>
-
-
-  <div class="form-group col-xs-4 centered">
-    <label class="centered" for="familyName">Family Name</label>
-    <input class="form-control" type="text" name="familyName" id="familyName" value="<%= user.familyName%>">
-  </div>
-
-  <div class="form-group centered">
-    <label for="categories">Favorite food categories</label><br>
-    <select multiple name="categories" id="categories">
-      <% categories.forEach((category) => { %>
-        <% if (user.categories.indexOf(category) >= 0) { %>
-          <option type="text" value="<%= category %>" class="form-control" selected>
-            <%= category %>
-          </option>
-        <% } else { %>
-          <option type="text" value="<%= category %>" class="form-control">
-            <%= category %>
-          </option>
-        <% } %>
-      <%  }) %>
-    </select>
-  </div>
-
-
-  <div class="form-group col-xs-4 centered">
+  <div class="form-group col-xs-12 col-md-6 centered">
     <label class="centered" for="address">Address</label>
     <input class="form-control" type="text" name="address" id="address" value="<%= user.address%>">
     <input class="form-control" type="text" name="latitude" id="latitude" value="<%= user.location.coordinates[0]%>">
@@ -49,7 +32,7 @@
     <input type="button" value="search address" id="encode">
   </div>
 
-  <div id="map" class="col-sm-4 centered"></div>
+  <div id="map" class="col-sm-12 centered"></div>
 
  <button type="submit" class="btn btn-primary center-block">Update</button>
 

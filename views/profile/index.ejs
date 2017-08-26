@@ -1,19 +1,8 @@
-<h2> Your user </h2>
+<h1 class="centered title"> Personal information </h1>
 
-<ul class="list-group col-sm-4 centered">
+<img src="../../uploads/741d9767f46c9ad603feb4df3d3ba1e2">
+<ul class="list-group centered">
   <li class="list-group-item"> Username: <%= user.username %> </li>
-  <li class="list-group-item"> Name: <%= user.name %> </li>
-  <li class="list-group-item"> Email: <%= user.email %> </li>
-  <li class="list-group-item"> Favorite foods: </li>
   <li class="list-group-item"> Address: <%= user.address %> </li>
-  <li class="list-group-item"> Categories </li>
-  <ul class="list-group">
-    <% user.categories.forEach((category) => { %>
-      <li class="list-group-item"><%= category %></li>
-    <% }) %>
-  </ul>
 </ul>
 
-<div id="map" class="col-sm-4 centered"></div>
-  
-<button class="btn btn-warning center-block"><a href="/profile/edit">Edit</a></button>

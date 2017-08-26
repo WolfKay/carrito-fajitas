@@ -9,15 +9,7 @@ const UserSchema = new Schema({
     required: [true, "You need a username"],
     unique: [true, "That name already exists"]
   },
-  email: String,
-  name: String,
-  familyName: String,
   facebookID: String,
-  categories: [{
-    type: String,
-    enum: CATEGORIES,
-    required: true
-  }],
   _recipes: [{
     type: Schema.Types.ObjectId,
     ref: "Recipe"
@@ -27,6 +19,7 @@ const UserSchema = new Schema({
     ref: "Event"
   }],
   address: String,
+  picturePath: String,
   location: Schema.Types.GeoJSON
 }, {
   timestamps: {

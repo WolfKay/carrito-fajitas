@@ -11,18 +11,23 @@ const expressLayouts = require("express-ejs-layouts");
 const index = require("./routes/index");
 const auth = require("./routes/auth");
 const profile = require("./routes/profile");
-const recipe = require("./routes/recipe");
+const recipes = require("./routes/recipes");
 const api = require("./routes/api");
+const events = require("./routes/events");
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const passport = passportConfig();
 
+const aws = require("aws-sdk");
+
 const app = express();
+
+require("dotenv").config();
 
 // mongoose configuration
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/carrito-fajitas");
+mongoose.connect(process.env.MONGODB_URI);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -43,6 +48,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 
+// Amazon S3 config
+aws.config.region = "eu-central-1";
+aws.Credentials.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+aws.Credentials.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+
 // session and passport
 app.use(session({
   secret: "carrito-fajitas",
@@ -60,9 +70,18 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Use the first part of the url to manage the menu partial
 app.use((req, res, next) => {
+  // Use the first part of the url to get the current nav
   res.locals.navScope = req.originalUrl.split("/")[1];
+  // Get the current section of the nav.Use the second part of the url if it 's shorter than the 
+  // number of characters of an ObjectID in mongo(24), otherwise use the third part of the url
+  if (req.originalUrl.split("/")[2]) {
+    res.locals.sectionScope = req.originalUrl.split("/")[2].length < 24 ?
+      req.originalUrl.split("/")[2] : req.originalUrl.split("/")[3];
+
+  } else {
+    res.locals.sectionScope = "/";
+  }
   next();
 });
 
@@ -80,8 +99,9 @@ app.use((req, res, next) => {
 app.use("/", auth);
 app.use("/", index);
 app.use("/profile", profile);
-app.use("/recipe", recipe);
+app.use("/recipes", recipes);
 app.use("/api", api);
+app.use("/events", events);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
